@@ -7,7 +7,13 @@ export class User extends Document {
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   email!: string;
 
-  @Prop({ required: true, unique: true, trim: true, minlength: 3, maxlength: 20 })
+  @Prop({
+    required: true,
+    unique: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 20,
+  })
   username!: string;
 
   @Prop({ required: true, select: false }) // Don't return password by default
@@ -16,7 +22,10 @@ export class User extends Document {
   @Prop({
     type: {
       displayName: { type: String, default: '' },
-      avatar: { type: String, default: 'https://ui-avatars.com/api/?name=User' },
+      avatar: {
+        type: String,
+        default: 'https://ui-avatars.com/api/?name=User',
+      },
       bio: { type: String, default: '', maxlength: 200 },
       createdAt: { type: Date, default: Date.now },
     },
@@ -60,6 +69,10 @@ export class User extends Document {
     soundEnabled: boolean;
     notificationsEnabled: boolean;
   };
+  @Prop({
+    default: new Date(),
+  })
+  lastLoginDate?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

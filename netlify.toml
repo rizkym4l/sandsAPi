@@ -12,15 +12,15 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/main/api/:splat"
+  to = "/.netlify/functions/main"
   status = 200
 
 [[redirects]]
   from = "/docs"
-  to = "/.netlify/functions/main/docs"
+  to = "/.netlify/functions/main"
   status = 200
 
 [[redirects]]
   from = "/docs/*"
-  to = "/.netlify/functions/main/docs/:splat"
+  to = "/.netlify/functions/main"
   status = 200

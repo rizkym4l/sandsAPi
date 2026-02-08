@@ -3,14 +3,14 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import serverlessExpress from '@codegenie/serverless-express';
+import serverless from 'serverless-http';
 import express from 'express';
 import { AppModule } from './app.module';
 
-let cachedServer: any;
+let cachedHandler: any;
 
 async function bootstrap() {
-  if (cachedServer) return cachedServer;
+  if (cachedHandler) return cachedHandler;
 
   const expressApp = express();
   const adapter = new ExpressAdapter(expressApp);
@@ -53,11 +53,11 @@ async function bootstrap() {
 
   await app.init();
 
-  cachedServer = serverlessExpress({ app: expressApp });
-  return cachedServer;
+  cachedHandler = serverless(expressApp);
+  return cachedHandler;
 }
 
-export const handler = async (event: any, context: any, callback: any) => {
+export const handler = async (event: any, context: any) => {
   const server = await bootstrap();
-  return server(event, context, callback);
+  return server(event, context);
 };

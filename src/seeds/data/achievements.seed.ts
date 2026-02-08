@@ -1,0 +1,133 @@
+// src/seeds/data/achievements.seed.ts
+
+export const achievementsSeed = [
+  // Streak Achievements
+  {
+    type: 'streak',
+    name: '3 Day Streak',
+    description: 'Login 3 hari berturut-turut',
+    icon: '🔥',
+    badge: '/badges/streak-3.png',
+    criteria: { criteriaType: 'streak_days', threshold: 3 },
+    rewards: { xp: 50, title: null },
+    rarity: 'common',
+  },
+  {
+    type: 'streak',
+    name: '7 Day Warrior',
+    description: 'Login 7 hari berturut-turut',
+    icon: '🔥',
+    badge: '/badges/streak-7.png',
+    criteria: { criteriaType: 'streak_days', threshold: 7 },
+    rewards: { xp: 100, title: 'Streak Master' },
+    rarity: 'rare',
+  },
+  {
+    type: 'streak',
+    name: '30 Day Legend',
+    description: 'Login 30 hari berturut-turut',
+    icon: '🔥',
+    badge: '/badges/streak-30.png',
+    criteria: { criteriaType: 'streak_days', threshold: 30 },
+    rewards: { xp: 500, title: 'Streak Legend' },
+    rarity: 'legendary',
+  },
+
+  // XP Achievements
+  {
+    type: 'xp',
+    name: 'First Steps',
+    description: 'Kumpulkan 100 XP',
+    icon: '⭐',
+    badge: '/badges/xp-100.png',
+    criteria: { criteriaType: 'total_xp', threshold: 100 },
+    rewards: { xp: 20, title: null },
+    rarity: 'common',
+  },
+  {
+    type: 'xp',
+    name: 'XP Hunter',
+    description: 'Kumpulkan 500 XP',
+    icon: '⭐',
+    badge: '/badges/xp-500.png',
+    criteria: { criteriaType: 'total_xp', threshold: 500 },
+    rewards: { xp: 50, title: 'XP Hunter' },
+    rarity: 'rare',
+  },
+  {
+    type: 'xp',
+    name: 'XP Master',
+    description: 'Kumpulkan 1000 XP',
+    icon: '🌟',
+    badge: '/badges/xp-1000.png',
+    criteria: { criteriaType: 'total_xp', threshold: 1000 },
+    rewards: { xp: 100, title: 'XP Master' },
+    rarity: 'epic',
+  },
+
+  // Completion Achievements
+  {
+    type: 'completion',
+    name: 'First Lesson',
+    description: 'Selesaikan 1 lesson',
+    icon: '📚',
+    badge: '/badges/lesson-1.png',
+    criteria: { criteriaType: 'lesson_completed', threshold: 1 },
+    rewards: { xp: 30, title: null },
+    rarity: 'common',
+  },
+  {
+    type: 'completion',
+    name: 'Quick Learner',
+    description: 'Selesaikan 5 lesson',
+    icon: '📚',
+    badge: '/badges/lesson-5.png',
+    criteria: { criteriaType: 'lesson_completed', threshold: 5 },
+    rewards: { xp: 75, title: 'Quick Learner' },
+    rarity: 'rare',
+  },
+  {
+    type: 'completion',
+    name: 'Dedicated Student',
+    description: 'Selesaikan 10 lesson',
+    icon: '🎓',
+    badge: '/badges/lesson-10.png',
+    criteria: { criteriaType: 'lesson_completed', threshold: 10 },
+    rewards: { xp: 150, title: 'Dedicated Student' },
+    rarity: 'epic',
+  },
+
+  // Accuracy Achievements
+  {
+    type: 'accuracy',
+    name: 'Perfect Score',
+    description: 'Dapat nilai 100% di quiz',
+    icon: '💯',
+    badge: '/badges/perfect-1.png',
+    criteria: { criteriaType: 'perfect_score', threshold: 1 },
+    rewards: { xp: 50, title: null },
+    rarity: 'common',
+  },
+  {
+    type: 'accuracy',
+    name: 'Perfectionist',
+    description: 'Dapat nilai 100% di 5 quiz',
+    icon: '💯',
+    badge: '/badges/perfect-5.png',
+    criteria: { criteriaType: 'perfect_score', threshold: 5 },
+    rewards: { xp: 150, title: 'Perfectionist' },
+    rarity: 'epic',
+  },
+
+  // Speed Achievements
+  {
+    type: 'speed',
+    name: 'Speed Demon',
+    description: 'Selesaikan quiz dalam 30 detik',
+    icon: '⚡',
+    badge: '/badges/speed-1.png',
+    criteria: { criteriaType: 'speed_challenge', threshold: 1 },
+    rewards: { xp: 75, title: 'Speed Demon' },
+    rarity: 'rare',
+  },
+];

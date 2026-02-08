@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  included_files = ["dist/**"]
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/main/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/docs"
+  to = "/.netlify/functions/main/docs"
+  status = 200
+
+[[redirects]]
+  from = "/docs/*"
+  to = "/.netlify/functions/main/docs/:splat"
+  status = 200

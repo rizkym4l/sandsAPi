@@ -1,0 +1,1266 @@
+{
+"openapi": "3.0.0",
+"paths": {
+"/api": {
+"get": {
+"operationId": "AppController_getHello",
+"parameters": [],
+"responses": {
+"200": {
+"description": ""
+}
+},
+"tags": [
+"App"
+]
+}
+},
+"/api/health": {
+"get": {
+"operationId": "AppController_checkHealth",
+"parameters": [],
+"responses": {
+"200": {
+"description": ""
+}
+},
+"tags": [
+"App"
+]
+}
+},
+"/api/users/leaderboard": {
+"get": {
+"operationId": "UsersController_getLeaderboard",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data leaderboard"
+}
+},
+"summary": "Get leaderboard (top users by XP)",
+"tags": [
+"Users"
+]
+}
+},
+"/api/users": {
+"get": {
+"operationId": "UsersController_findAll",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data semua user"
+}
+},
+"summary": "Get semua user",
+"tags": [
+"Users"
+]
+}
+},
+"/api/users/{id}": {
+"get": {
+"operationId": "UsersController_findById",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data user"
+},
+"404": {
+"description": "User tidak ditemukan"
+}
+},
+"summary": "Get user by ID",
+"tags": [
+"Users"
+]
+}
+},
+"/api/users/profile": {
+"put": {
+"operationId": "UsersController_updateProfile",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/UpdateProfileDto"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Profile berhasil diupdate"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Update profile user",
+"tags": [
+"Users"
+]
+},
+"delete": {
+"operationId": "UsersController_deleteAccount",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Akun berhasil dihapus"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Hapus akun user",
+"tags": [
+"Users"
+]
+}
+},
+"/api/users/xp": {
+"put": {
+"operationId": "UsersController_updateXP",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"xp": {
+"type": "number",
+"example": 50
+}
+}
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "XP berhasil diupdate"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Update XP user",
+"tags": [
+"Users"
+]
+}
+},
+"/api/auth/register": {
+"post": {
+"operationId": "AuthController_register",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/RegisterDto"
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Registrasi berhasil"
+},
+"400": {
+"description": "Validasi gagal / email sudah terdaftar"
+}
+},
+"summary": "Register user baru",
+"tags": [
+"Auth"
+]
+}
+},
+"/api/auth/login": {
+"post": {
+"operationId": "AuthController_login",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/LoginDto"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Login berhasil, return JWT token"
+},
+"401": {
+"description": "Email atau password salah"
+}
+},
+"summary": "Login user",
+"tags": [
+"Auth"
+]
+}
+},
+"/api/auth/profile": {
+"get": {
+"operationId": "AuthController_getProfile",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data profile user"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get profile user yang sedang login",
+"tags": [
+"Auth"
+]
+}
+},
+"/api/levels": {
+"get": {
+"operationId": "LevelsController_findAll",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data semua level"
+}
+},
+"summary": "Get semua level",
+"tags": [
+"Levels"
+]
+},
+"post": {
+"operationId": "LevelsController_create",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"levelNumber": {
+"type": "number",
+"example": 1
+},
+"title": {
+"type": "string",
+"example": "Huruf Dasar A-E"
+},
+"description": {
+"type": "string",
+"example": "Belajar huruf dasar A sampai E"
+},
+"difficulty": {
+"type": "string",
+"example": "beginner"
+}
+}
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Level berhasil dibuat"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Buat level baru",
+"tags": [
+"Levels"
+]
+}
+},
+"/api/levels/{id}": {
+"get": {
+"operationId": "LevelsController_findById",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data level"
+}
+},
+"summary": "Get level by ID",
+"tags": [
+"Levels"
+]
+},
+"put": {
+"operationId": "LevelsController_update",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Level berhasil diupdate"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Update level by ID",
+"tags": [
+"Levels"
+]
+},
+"delete": {
+"operationId": "LevelsController_delete",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Level berhasil dihapus"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Hapus level by ID",
+"tags": [
+"Levels"
+]
+}
+},
+"/api/levels/number/{levelNumber}": {
+"get": {
+"operationId": "LevelsController_findByLevelNumber",
+"parameters": [
+{
+"name": "levelNumber",
+"required": true,
+"in": "path",
+"schema": {
+"type": "number"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data level"
+}
+},
+"summary": "Get level by nomor level",
+"tags": [
+"Levels"
+]
+}
+},
+"/api/lessons": {
+"get": {
+"operationId": "LessonsController_findAll",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data semua lesson"
+}
+},
+"summary": "Get semua lesson",
+"tags": [
+"Lessons"
+]
+},
+"post": {
+"operationId": "LessonsController_create",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"levelId": {
+"type": "string",
+"example": "507f1f77bcf86cd799439011"
+},
+"title": {
+"type": "string",
+"example": "Belajar Huruf A"
+},
+"type": {
+"type": "string",
+"example": "learning"
+},
+"order": {
+"type": "number",
+"example": 1
+},
+"content": {
+"type": "object",
+"example": {
+"letters": [
+"A",
+"B",
+"C"
+]
+}
+}
+}
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Lesson berhasil dibuat"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Buat lesson baru",
+"tags": [
+"Lessons"
+]
+}
+},
+"/api/lessons/{id}": {
+"get": {
+"operationId": "LessonsController_findById",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data lesson"
+}
+},
+"summary": "Get lesson by ID",
+"tags": [
+"Lessons"
+]
+},
+"put": {
+"operationId": "LessonsController_update",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Lesson berhasil diupdate"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Update lesson by ID",
+"tags": [
+"Lessons"
+]
+},
+"delete": {
+"operationId": "LessonsController_delete",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Lesson berhasil dihapus"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Hapus lesson by ID",
+"tags": [
+"Lessons"
+]
+}
+},
+"/api/lessons/level/{levelId}": {
+"get": {
+"operationId": "LessonsController_findByLevelId",
+"parameters": [
+{
+"name": "levelId",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data lesson berdasarkan level"
+}
+},
+"summary": "Get lessons by level ID",
+"tags": [
+"Lessons"
+]
+}
+},
+"/api/lessons/type/{type}": {
+"get": {
+"operationId": "LessonsController_findByType",
+"parameters": [
+{
+"name": "type",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data lesson berdasarkan type"
+}
+},
+"summary": "Get lessons by type (learning/practice/quiz)",
+"tags": [
+"Lessons"
+]
+}
+},
+"/api/progress": {
+"get": {
+"operationId": "ProgressController_getUserProgress",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data progress user"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get semua progress user",
+"tags": [
+"Progress"
+]
+}
+},
+"/api/progress/stats": {
+"get": {
+"operationId": "ProgressController_getStats",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data statistik user"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get statistik user (total lesson, XP, dll)",
+"tags": [
+"Progress"
+]
+}
+},
+"/api/progress/lesson/{lessonId}": {
+"get": {
+"operationId": "ProgressController_getLessonProgress",
+"parameters": [
+{
+"name": "lessonId",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data progress lesson"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get progress lesson tertentu",
+"tags": [
+"Progress"
+]
+}
+},
+"/api/progress/start": {
+"post": {
+"operationId": "ProgressController_startLesson",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"levelId": {
+"type": "string",
+"example": "507f1f77bcf86cd799439011"
+},
+"lessonId": {
+"type": "string",
+"example": "507f1f77bcf86cd799439012"
+}
+}
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Lesson dimulai"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Mulai lesson baru",
+"tags": [
+"Progress"
+]
+}
+},
+"/api/progress/complete": {
+"post": {
+"operationId": "ProgressController_completeLesson",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"lessonId": {
+"type": "string",
+"example": "507f1f77bcf86cd799439012"
+},
+"score": {
+"type": "number",
+"example": 85
+},
+"timeSpent": {
+"type": "number",
+"example": 120,
+"description": "Dalam detik"
+},
+"detailedProgress": {
+"type": "object",
+"example": {
+"correctAnswers": 8,
+"totalQuestions": 10
+}
+}
+}
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Lesson selesai"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Selesaikan lesson",
+"tags": [
+"Progress"
+]
+}
+},
+"/api/quiz/history": {
+"get": {
+"operationId": "QuizController_getHistory",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Quiz history"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get riwayat quiz user",
+"tags": [
+"Quiz"
+]
+}
+},
+"/api/quiz/{id}/results": {
+"get": {
+"operationId": "QuizController_getResult",
+"parameters": [
+{
+"name": "id",
+"required": true,
+"in": "path",
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Data hasil quiz"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get hasil quiz by ID",
+"tags": [
+"Quiz"
+]
+}
+},
+"/api/quiz/submit": {
+"post": {
+"operationId": "QuizController_submit",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/SubmitDto"
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Quiz berhasil disubmit"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Submit jawaban quiz",
+"tags": [
+"Quiz"
+]
+}
+},
+"/api/achievements": {
+"get": {
+"operationId": "AchievementsController_findAll",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data semua achievement"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get semua achievement",
+"tags": [
+"Achievements"
+]
+},
+"post": {
+"operationId": "AchievementsController_create",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"example": "7 Day Streak"
+},
+"description": {
+"type": "string",
+"example": "Login 7 hari berturut-turut"
+},
+"type": {
+"type": "string",
+"example": "streak"
+},
+"criteria": {
+"type": "object",
+"example": {
+"threshold": 7
+}
+},
+"rarity": {
+"type": "string",
+"example": "rare"
+},
+"icon": {
+"type": "string",
+"example": "streak-7"
+}
+}
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Achievement berhasil dibuat"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Buat achievement baru",
+"tags": [
+"Achievements"
+]
+}
+},
+"/api/achievements/user": {
+"get": {
+"operationId": "AchievementsController_getUserAchievements",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Achievement user"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get achievement user yang sedang login",
+"tags": [
+"Achievements"
+]
+}
+},
+"/api/achievements/check": {
+"post": {
+"operationId": "AchievementsController_check",
+"parameters": [],
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"eventType": {
+"type": "string",
+"example": "streak",
+"description": "Tipe event: streak, xp, completion, accuracy, speed"
+},
+"value": {
+"type": "number",
+"example": 7,
+"description": "Nilai yang dicapai user"
+}
+}
+}
+}
+}
+},
+"responses": {
+"201": {
+"description": "Achievement check berhasil"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Check dan award achievement berdasarkan event",
+"tags": [
+"Achievements"
+]
+}
+},
+"/api/daily-activity/today": {
+"get": {
+"operationId": "DailyActivityController_getToday",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Aktivitas hari ini"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get aktivitas hari ini",
+"tags": [
+"Daily Activity"
+]
+}
+},
+"/api/daily-activity/history": {
+"get": {
+"operationId": "DailyActivityController_getHistory",
+"parameters": [
+{
+"name": "days",
+"required": false,
+"in": "query",
+"description": "Jumlah hari ke belakang (default 30)",
+"schema": {
+"example": 30,
+"type": "number"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Riwayat aktivitas"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get riwayat aktivitas",
+"tags": [
+"Daily Activity"
+]
+}
+},
+"/api/daily-activity/streak": {
+"get": {
+"operationId": "DailyActivityController_getStreak",
+"parameters": [],
+"responses": {
+"200": {
+"description": "Data streak"
+}
+},
+"security": [
+{
+"JWT-auth": []
+}
+],
+"summary": "Get streak user",
+"tags": [
+"Daily Activity"
+]
+}
+}
+},
+"info": {
+"title": "SignMaster API",
+"description": "API untuk aplikasi belajar bahasa isyarat SignMaster",
+"version": "1.0",
+"contact": {}
+},
+"tags": [
+{
+"name": "Auth",
+"description": "Authentication endpoints"
+},
+{
+"name": "Users",
+"description": "User management"
+},
+{
+"name": "Levels",
+"description": "Learning levels"
+},
+{
+"name": "Lessons",
+"description": "Lessons within levels"
+},
+{
+"name": "Progress",
+"description": "User progress tracking"
+},
+{
+"name": "Quiz",
+"description": "Quiz submission & results"
+},
+{
+"name": "Achievements",
+"description": "User achievements"
+},
+{
+"name": "Daily Activity",
+"description": "Daily activity & streaks"
+}
+],
+"servers": [],
+"components": {
+"securitySchemes": {
+"JWT-auth": {
+"scheme": "bearer",
+"bearerFormat": "JWT",
+"type": "http",
+"name": "JWT",
+"description": "Enter JWT token",
+"in": "header"
+}
+},
+"schemas": {
+"UpdateProfileDto": {
+"type": "object",
+"properties": {
+"displayName": {
+"type": "string",
+"example": "John Doe"
+},
+"bio": {
+"type": "string",
+"example": "Saya sedang belajar bahasa isyarat"
+}
+}
+},
+"RegisterDto": {
+"type": "object",
+"properties": {
+"email": {
+"type": "string",
+"example": "user@gmail.com"
+},
+"username": {
+"type": "string",
+"example": "johndoe"
+},
+"password": {
+"type": "string",
+"example": "password123"
+}
+},
+"required": [
+"email",
+"username",
+"password"
+]
+},
+"LoginDto": {
+"type": "object",
+"properties": {
+"email": {
+"type": "string",
+"example": "user@gmail.com"
+},
+"password": {
+"type": "string",
+"example": "password123"
+}
+},
+"required": [
+"email",
+"password"
+]
+},
+"AnswerDto": {
+"type": "object",
+"properties": {
+"questionId": {
+"type": "string",
+"example": "507f1f77bcf86cd799439011"
+},
+"userAnswer": {
+"type": "string",
+"example": "A"
+},
+"timeSpent": {
+"type": "number",
+"example": 5
+}
+},
+"required": [
+"questionId",
+"userAnswer",
+"timeSpent"
+]
+},
+"MistakeDto": {
+"type": "object",
+"properties": {
+"position": {
+"type": "number",
+"example": 2
+},
+"expectedLetter": {
+"type": "string",
+"example": "B"
+},
+"detectedLetter": {
+"type": "string",
+"example": "D"
+}
+},
+"required": [
+"position",
+"expectedLetter",
+"detectedLetter"
+]
+},
+"CameraChallengeDto": {
+"type": "object",
+"properties": {
+"word": {
+"type": "string",
+"example": "HALO"
+},
+"mistakes": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/MistakeDto"
+}
+},
+"averageConfidence": {
+"type": "number",
+"example": 0.85
+}
+},
+"required": [
+"word",
+"mistakes",
+"averageConfidence"
+]
+},
+"SubmitDto": {
+"type": "object",
+"properties": {
+"lessonId": {
+"type": "string",
+"example": "507f1f77bcf86cd799439011"
+},
+"quizType": {
+"type": "string",
+"example": "quiz",
+"enum": [
+"practice",
+"quiz",
+"camera-challenge"
+]
+},
+"answers": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/AnswerDto"
+}
+},
+"cameraChallenge": {
+"$ref": "#/components/schemas/CameraChallengeDto"
+}
+},
+"required": [
+"lessonId",
+"quizType",
+"answers"
+]
+}
+}
+}
+}

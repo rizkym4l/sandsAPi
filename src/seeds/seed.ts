@@ -6,7 +6,7 @@ import { getConnectionToken } from '@nestjs/mongoose';
 import { levelsSeed } from './data/levels.seed';
 import { lessonsSeed } from './data/lessons.seed';
 import { achievementsSeed } from './data/achievements.seed';
-
+import { userssedd } from './data/users.seed';
 async function seed() {
   // 1. Buat app context (tanpa HTTP server)
   const app = await NestFactory.createApplicationContext(AppModule);

@@ -1,27 +1,38 @@
 // src/modules/auth/auth.service.ts
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { isSameDay } from 'src/common/gateKnown';
+import { AchievementsService } from '../achievements/achievements.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private UserAchievement: AchievementsService,
     private jwtService: JwtService,
   ) {}
 
   async register(registerDto: RegisterDto) {
     // Check if email already exists
-    const existingEmail = await this.usersService.findByEmail(registerDto.email);
+    const existingEmail = await this.usersService.findByEmail(
+      registerDto.email,
+    );
     if (existingEmail) {
       throw new ConflictException('Email sudah terdaftar');
     }
 
     // Check if username already exists
-    const existingUsername = await this.usersService.findByUsername(registerDto.username);
+    const existingUsername = await this.usersService.findByUsername(
+      registerDto.username,
+    );
     if (existingUsername) {
       throw new ConflictException('Username sudah digunakan');
     }
@@ -52,7 +63,20 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const user = await this.validateUser(loginDto.email, loginDto.password);
+    const today = new Date();
+    let isNewDayLogin = false;
+    const lastLogin = user.lastLoginDate ? new Date(user.lastLoginDate) : null;
+    if (lastLogin) {
+      if (!isSameDay(lastLogin, today)) {
+        isNewDayLogin = true;
 
+        user.lastLoginDate = today;
+        await user.save();
+      }
+    }
+    if (isNewDayLogin) {
+      await this.UserAchievement.checkAndAward(user._id.toString(), 'streak', 1);
+    }
     const token = this.generateToken(user);
 
     return {
@@ -87,7 +111,7 @@ export class AuthService {
     const payload = {
       sub: user._id,
       email: user.email,
-      username: user.username
+      username: user.username,
     };
     return this.jwtService.sign(payload);
   }
@@ -95,6 +119,4 @@ export class AuthService {
   async getProfile(userId: string) {
     return this.usersService.findById(userId);
   }
-
-  
 }

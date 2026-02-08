@@ -1,6 +1,9 @@
 [build]
-  command = "npm run build"
+  command = "npm install --include=dev && npm run build"
   publish = "dist"
+
+[build.environment]
+  NODE_ENV = "production"
 
 [functions]
   directory = "netlify/functions"

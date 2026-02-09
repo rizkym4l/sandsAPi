@@ -57,7 +57,7 @@ async findByLevelId(levelId: string): Promise<Lesson[]> {
 
   async completeLesson(id: string): Promise<Lesson> {
     const lesson = await this.lessonModel
-      .findByIdAndUpdate(id, { isCompleted: true }, { new: true })
+      .findByIdAndUpdate(id, { isCompleted: true, rewards : {xpPoints : 0 , badge :""}}, { new: true })
       .exec();
 
     if (!lesson) {

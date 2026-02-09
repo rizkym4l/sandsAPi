@@ -26,12 +26,11 @@ export class LessonsService {
     return lesson;
   }
 
-  async findByLevelId(levelId: string): Promise<Lesson[]> {
-    return this.lessonModel
-      .find({ levelId })
-      .sort({ order: 1 })
-      .exec();
-  }
+async findByLevelId(levelId: string): Promise<Lesson[]> {
+  const data = await this.lessonModel.find();
+  return data.filter((da) => da.levelId.toString() === levelId);
+}
+
 
   async findByType(type: string): Promise<Lesson[]> {
     return this.lessonModel

@@ -93,6 +93,9 @@ export class Lesson extends Document {
 
   @Prop({ default: 15 })
   estimatedDuration!: number; // minutes
+
+  @Prop({ default: false })
+  isCompleted!: boolean;
 }
 
 export const LessonSchema = SchemaFactory.createForClass(Lesson);

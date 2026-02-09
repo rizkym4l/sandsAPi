@@ -55,6 +55,17 @@ async findByLevelId(levelId: string): Promise<Lesson[]> {
     return lesson;
   }
 
+  async completeLesson(id: string): Promise<Lesson> {
+    const lesson = await this.lessonModel
+      .findByIdAndUpdate(id, { isCompleted: true }, { new: true })
+      .exec();
+
+    if (!lesson) {
+      throw new NotFoundException('Lesson tidak ditemukan');
+    }
+    return lesson;
+  }
+
   async delete(id: string): Promise<{ message: string }> {
     const result = await this.lessonModel.findByIdAndDelete(id).exec();
     if (!result) {

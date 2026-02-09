@@ -27,6 +27,7 @@ function createLearningLesson(levelIndex: number, letters: string[], order: numb
     rewards: { xpPoints: 20 },
     order,
     estimatedDuration: 10,
+    isCompleted: false,
   };
 }
 
@@ -53,6 +54,7 @@ function createQuizLesson(levelIndex: number, letters: string[], order: number) 
     rewards: { xpPoints: 30 },
     order,
     estimatedDuration: 15,
+    isCompleted: false,
   };
 }
 
@@ -82,6 +84,7 @@ function createPracticeLesson(levelIndex: number, letters: string[], order: numb
     rewards: { xpPoints: 25 },
     order,
     estimatedDuration: 15,
+    isCompleted: false,
   };
 }
 

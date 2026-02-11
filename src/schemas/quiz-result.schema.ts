@@ -36,7 +36,6 @@ export class QuizResult extends Document {
   xpEarned!: number;
 
   @Prop([{
-    questionId: String,
     userAnswer: String,
     correctAnswer: String,
     isCorrect: Boolean,
@@ -44,7 +43,6 @@ export class QuizResult extends Document {
     _id: false,
   }])
   answers!: Array<{
-    questionId: string;
     userAnswer: string;
     correctAnswer: string;
     isCorrect: boolean;

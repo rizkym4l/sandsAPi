@@ -12,10 +12,6 @@ import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 class AnswerDto {
-  @ApiProperty({ example: '507f1f77bcf86cd799439011' })
-  @IsString()
-  questionId!: string;
-
   @ApiProperty({ example: 'A' })
   @IsString()
   userAnswer!: string;

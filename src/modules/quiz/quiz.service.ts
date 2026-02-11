@@ -69,7 +69,6 @@ export class QuizService {
         totalTime += ans.timeSpent;
 
         return {
-          questionId: ans.questionId,
           userAnswer: ans.userAnswer,
           correctAnswer: question?.correctAnswer || '',
           isCorrect,

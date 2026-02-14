@@ -3,11 +3,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Lesson } from '../../schemas/lesson.schema';
+import { UserProgress } from '../../schemas/user-progress.schema';
 
 @Injectable()
 export class LessonsService {
   constructor(
     @InjectModel(Lesson.name) private lessonModel: Model<Lesson>,
+    @InjectModel(UserProgress.name) private progressModel: Model<UserProgress>,
   ) {}
 
   async findAll(): Promise<Lesson[]> {
@@ -55,14 +57,29 @@ async findByLevelId(levelId: string): Promise<Lesson[]> {
     return lesson;
   }
 
-  async completeLesson(id: string): Promise<Lesson> {
-    const lesson = await this.lessonModel
-      .findByIdAndUpdate(id, { isCompleted: true, rewards : {xpPoints : 0 , badge :""}}, { new: true })
-      .exec();
-
+  async completeLesson(id: string, userId: string): Promise<Lesson> {
+    const lesson = await this.lessonModel.findById(id).exec();
     if (!lesson) {
       throw new NotFoundException('Lesson tidak ditemukan');
     }
+
+    // Save completion in UserProgress (per-user), NOT on the shared Lesson doc
+    const existing = await this.progressModel.findOne({ userId, lessonId: id }).exec();
+    if (existing) {
+      existing.status = 'completed';
+      existing.completedAt = new Date();
+      await existing.save();
+    } else {
+      await this.progressModel.create({
+        userId,
+        levelId: lesson.levelId,
+        lessonId: id,
+        status: 'completed',
+        completedAt: new Date(),
+        attempts: 1,
+      });
+    }
+
     return lesson;
   }
 

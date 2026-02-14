@@ -1,5 +1,5 @@
 // src/modules/lessons/lessons.controller.ts
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { LessonsService } from './lessons.service';
 import { Lesson } from '../../schemas/lesson.schema';
@@ -82,8 +82,8 @@ export class LessonsController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Patch(':id/complete')
-  async completeLesson(@Param('id') id: string) {
-    const data = await this.lessonsService.completeLesson(id);
+  async completeLesson(@Param('id') id: string, @Request() req) {
+    const data = await this.lessonsService.completeLesson(id, req.user._id);
     return ApiResponse.updated(data, 'Lesson berhasil diselesaikan');
   }
 

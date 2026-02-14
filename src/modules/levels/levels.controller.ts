@@ -1,5 +1,5 @@
 // src/modules/levels/levels.controller.ts
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiBody } from '@nestjs/swagger';
 import { LevelsService } from './levels.service';
 import { Level } from '../../schemas/level.schema';
@@ -11,19 +11,23 @@ import { ApiResponse } from '../../common/response.helper';
 export class LevelsController {
   constructor(private levelsService: LevelsService) {}
 
-  @ApiOperation({ summary: 'Get semua level' })
+  @ApiOperation({ summary: 'Get semua level (with per-user completion)' })
   @SwaggerResponse({ status: 200, description: 'Data semua level' })
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    const data = await this.levelsService.findAll();
+  async findAll(@Request() req) {
+    const data = await this.levelsService.findAll(req.user._id);
     return ApiResponse.success(data, 'Data semua level');
   }
 
-  @ApiOperation({ summary: 'Get level by ID' })
+  @ApiOperation({ summary: 'Get level by ID (with per-user completion)' })
   @SwaggerResponse({ status: 200, description: 'Data level' })
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    const data = await this.levelsService.findById(id);
+  async findById(@Param('id') id: string, @Request() req) {
+    const data = await this.levelsService.findById(id, req.user._id);
     return ApiResponse.success(data);
   }
 

@@ -3,30 +3,57 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Level } from '../../schemas/level.schema';
+import { UserProgress } from '../../schemas/user-progress.schema';
 
 @Injectable()
 export class LevelsService {
   constructor(
     @InjectModel(Level.name) private levelModel: Model<Level>,
+    @InjectModel(UserProgress.name) private progressModel: Model<UserProgress>,
   ) {}
 
-  async findAll(): Promise<Level[]> {
-    return this.levelModel
+  /** Inject per-user isCompleted into each populated lesson */
+  private async injectCompletion(levels: any[], userId?: string) {
+    if (!userId) return levels;
+
+    const completed = await this.progressModel
+      .find({ userId, status: 'completed' })
+      .select('lessonId')
+      .lean()
+      .exec();
+    const completedSet = new Set(completed.map((p) => p.lessonId.toString()));
+
+    for (const level of levels) {
+      if (!level.lessons) continue;
+      for (const lesson of level.lessons) {
+        const lid = lesson._id?.toString?.() || lesson.toString();
+        lesson.isCompleted = completedSet.has(lid);
+      }
+    }
+    return levels;
+  }
+
+  async findAll(userId?: string): Promise<any[]> {
+    const levels = await this.levelModel
       .find({ isActive: true })
       .sort({ order: 1 })
       .populate('lessons')
+      .lean()
       .exec();
+    return this.injectCompletion(levels, userId);
   }
 
-  async findById(id: string): Promise<Level> {
+  async findById(id: string, userId?: string): Promise<any> {
     const level = await this.levelModel
       .findById(id)
       .populate('lessons')
+      .lean()
       .exec();
 
     if (!level) {
       throw new NotFoundException('Level tidak ditemukan');
     }
+    await this.injectCompletion([level], userId);
     return level;
   }
 

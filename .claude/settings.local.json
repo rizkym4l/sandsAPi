@@ -11,7 +11,9 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run seed:*)",
+      "Bash(git status:*)"
     ]
   }
 }

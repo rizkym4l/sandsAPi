@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../schemas/user.schema';
+import { Level } from '../../schemas/level.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
@@ -10,6 +11,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Level.name) private levelModel: Model<Level>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -67,7 +69,27 @@ export class UsersService {
         throw new NotFoundException("User Tidak ditemukan")
     }
 
-    return user
+    // Auto level progression: find highest level the user qualifies for
+    const levels = await this.levelModel
+      .find({ isActive: true })
+      .sort({ order: 1 })
+      .exec();
+
+    let newLevel = 1;
+    for (const level of levels) {
+      if (user.stats.totalXP >= level.requiredXP) {
+        newLevel = level.levelNumber;
+      } else {
+        break;
+      }
+    }
+
+    if (newLevel !== user.stats.currentLevel) {
+      user.stats.currentLevel = newLevel;
+      await user.save();
+    }
+
+    return user;
   }
 
   async delete(id: string): Promise<{ message: string }> {

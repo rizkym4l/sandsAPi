@@ -17,3 +17,15 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t signmaster-backend .
+      
+      - name: Login ke Docker Hub
+        uses: docker/login-action@v3
+        with : 
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Tag image
+        run: docker tag signmaster-backend rizkym4l/signmaster-backend:latest
+      
+      - name: Push ke docker Hub
+        run: docker push rizkym4l/signmaster-backend:latest

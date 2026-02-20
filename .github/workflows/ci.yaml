@@ -30,3 +30,18 @@ jobs:
       
       - name: Push ke docker Hub
         run: docker push rizkym4l/signmaster-backend:latest
+
+      - name: Notif to Disocrd -sukses
+        if: success()
+        run: |
+         curl -H "Content-Type: application/json" \
+         -d '{"content": "Pipline Berhasil"}' \
+         ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Notif to Discord - gagal
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{"content": "❌ Pipeline Gagal!\nRepo: ${{github.repository}}\nBranch: ${{github.ref_name}}\nCek: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          ${{ secrets.DISCORD_WEBHOOK }}
+

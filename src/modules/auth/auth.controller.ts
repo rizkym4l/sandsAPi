@@ -6,6 +6,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiResponse } from '../../common/response.helper';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -15,12 +16,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Register user baru' })
   @SwaggerResponse({ status: 201, description: 'Registrasi berhasil' })
   @SwaggerResponse({ status: 400, description: 'Validasi gagal / email sudah terdaftar' })
+  @Throttle({default:{ttl:60000,limit:5}})
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     const data = await this.authService.register(registerDto);
     return ApiResponse.created(data, 'Registrasi berhasil');
   }
-
+  @Throttle({default:{ttl:60000,limit:5}})
   @ApiOperation({ summary: 'Login user' })
   @SwaggerResponse({ status: 200, description: 'Login berhasil, return JWT token' })
   @SwaggerResponse({ status: 401, description: 'Email atau password salah' })

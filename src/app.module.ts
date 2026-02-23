@@ -12,7 +12,9 @@ import { ProgressModule } from './modules/progress/progress.module';
 import { QuizModule } from './modules/quiz/quiz.module';
 import { AchievementsModule } from './modules/achievements/achievements.module';
 import { DailyActivityModule } from './modules/daily-activity/daily-activity.module';
-
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,8 +38,17 @@ import { DailyActivityModule } from './modules/daily-activity/daily-activity.mod
     QuizModule,
     AchievementsModule,
     DailyActivityModule,
+    ThrottlerModule.forRoot([{
+      ttl:60000,
+      limit:10,
+    }])
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }
+  ],
 })
 export class AppModule {}

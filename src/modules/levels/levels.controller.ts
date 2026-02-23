@@ -5,6 +5,7 @@ import { LevelsService } from './levels.service';
 import { Level } from '../../schemas/level.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiResponse } from '../../common/response.helper';
+import { Roles, RolesGuard } from '../../common/roles.guard';
 
 @ApiTags('Levels')
 @Controller('levels')
@@ -53,7 +54,8 @@ export class LevelsController {
     },
   })
   @ApiBearerAuth('JWT-auth')
-  @UseGuards(JwtAuthGuard)
+  @Roles("admin")
+  @UseGuards(JwtAuthGuard,RolesGuard)
   @Post()
   async create(@Body() createLevelDto: Partial<Level>) {
     const data = await this.levelsService.create(createLevelDto);
@@ -73,7 +75,8 @@ export class LevelsController {
   @ApiOperation({ summary: 'Hapus level by ID' })
   @SwaggerResponse({ status: 200, description: 'Level berhasil dihapus' })
   @ApiBearerAuth('JWT-auth')
-  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard,RolesGuard)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     await this.levelsService.delete(id);

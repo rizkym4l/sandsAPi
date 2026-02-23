@@ -5,6 +5,7 @@ import { LessonsService } from './lessons.service';
 import { Lesson } from '../../schemas/lesson.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiResponse } from '../../common/response.helper';
+import { Roles, RolesGuard } from '../../common/roles.guard';
 
 @ApiTags('Lessons')
 @Controller('lessons')
@@ -58,7 +59,8 @@ export class LessonsController {
     },
   })
   @ApiBearerAuth('JWT-auth')
-  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   async create(@Body() createLessonDto: Partial<Lesson>) {
     const data = await this.lessonsService.create(createLessonDto);
@@ -90,7 +92,8 @@ export class LessonsController {
   @ApiOperation({ summary: 'Hapus lesson by ID' })
   @SwaggerResponse({ status: 200, description: 'Lesson berhasil dihapus' })
   @ApiBearerAuth('JWT-auth')
-  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   async delete(@Param('id') id: string) {
     await this.lessonsService.delete(id);

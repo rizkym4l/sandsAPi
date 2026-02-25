@@ -20,6 +20,7 @@ describe('LessonsController', () => {
             update: jest.fn(),
             delete: jest.fn(),
             completeLesson: jest.fn(),
+            pagination: jest.fn(),
           },
         },
       ],

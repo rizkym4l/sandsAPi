@@ -17,6 +17,7 @@ describe('UsersController', () => {
             updateXP: jest.fn(),
             delete: jest.fn(),
             getLeaderboard: jest.fn(),
+            pagination: jest.fn(),
           },
         },
       ],

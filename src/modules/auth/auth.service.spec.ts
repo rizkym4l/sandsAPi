@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { AchievementsService } from '../achievements/achievements.service';
 import { JwtService } from '@nestjs/jwt';
+import { MailerService } from '@nestjs-modules/mailer';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -18,6 +19,10 @@ describe('AuthService', () => {
             findByUsername: jest.fn(),
             create: jest.fn(),
             findById: jest.fn(),
+            updateById: jest.fn(),
+            findUserbyVerificationToken: jest.fn(),
+            findUserbyResetToken: jest.fn(),
+            findUserbyRefreshToken: jest.fn(),
           },
         },
         {
@@ -30,6 +35,12 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: {
             sign: jest.fn(),
+          },
+        },
+        {
+          provide: MailerService,
+          useValue: {
+            sendMail: jest.fn(),
           },
         },
       ],

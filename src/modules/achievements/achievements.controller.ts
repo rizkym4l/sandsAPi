@@ -1,5 +1,5 @@
 // src/modules/achievements/achievements.controller.ts
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiBody } from '@nestjs/swagger';
 import { AchievementsService } from './achievements.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -17,6 +17,14 @@ export class AchievementsController {
   async findAll() {
     const data = await this.achievementsService.findAll();
     return ApiResponse.success(data, 'Data semua achievement');
+  }
+
+  @ApiOperation({ summary: 'Get achievement paginate' })
+  @SwaggerResponse({ status: 200, description: 'Data achievement Paginate' })
+  @Get('paginate')
+  async paginate(@Query('page') page: string, @Query('limit') limit: string) {
+    const paginate = await this.achievementsService.pagination(Number(page), Number(limit));
+    return paginate;
   }
 
   @ApiOperation({ summary: 'Get achievement user yang sedang login' })

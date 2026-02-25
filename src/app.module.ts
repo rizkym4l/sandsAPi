@@ -15,6 +15,8 @@ import { DailyActivityModule } from './modules/daily-activity/daily-activity.mod
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { MailerModule } from '@nestjs-modules/mailer';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,7 +43,23 @@ import { APP_GUARD } from '@nestjs/core';
     ThrottlerModule.forRoot([{
       ttl:60000,
       limit:10,
-    }])
+    }]),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async(configService : ConfigService) => ({
+        transport: {
+          host: configService.get<string>('MAIL_HOST'),
+          port: configService.get<number>('MAIL_PORT'),
+          auth: {
+            user: configService.get<string>('MAIL_USER'),
+            pass: configService.get<string>('MAIL_PASS'),}
+        },
+        defaults:{
+          from: configService.get<string>('MAIL_FROM'),
+        }
+      })
+    })
   ],
   controllers: [AppController],
   providers: [AppService,

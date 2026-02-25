@@ -1,5 +1,5 @@
 // src/modules/users/users.controller.ts
-import { Controller, Get, Put, Delete, Body, UseGuards, Request, Param } from '@nestjs/common';
+import { Controller, Get, Put, Delete, Body, UseGuards, Request, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiBody } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -25,6 +25,16 @@ export class UsersController {
   async findAll() {
     const data = await this.usersService.findAll();
     return ApiResponse.success(data, 'Data semua user');
+  }
+
+  @ApiOperation({ summary: 'Get user paginate' })
+  @SwaggerResponse({ status: 200, description: 'Data user Paginate' })
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
+  @Get('paginate')
+  async paginate(@Query('page') page: string, @Query('limit') limit: string) {
+    const paginate = await this.usersService.pagination(Number(page), Number(limit));
+    return paginate;
   }
 
   @ApiOperation({ summary: 'Get user by ID' })

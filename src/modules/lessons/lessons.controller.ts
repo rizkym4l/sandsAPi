@@ -1,6 +1,25 @@
 // src/modules/lessons/lessons.controller.ts
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse as SwaggerResponse,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
 import { LessonsService } from './lessons.service';
 import { Lesson } from '../../schemas/lesson.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -19,6 +38,15 @@ export class LessonsController {
     const data = await this.lessonsService.findAll();
     return ApiResponse.success(data, 'Data semua lesson');
   }
+  @ApiOperation({ summary: 'Get lesson paginate' })
+  @SwaggerResponse({ status: 200, description: 'Data lesson Paginate' })
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard)
+  @Get('paginate')
+  async paginate(@Query('page') page: string, @Query('limit') limit: string) {
+    const paginate = await this.lessonsService.pagination(Number(page),Number(limit));
+    return paginate;
+  }
 
   @ApiOperation({ summary: 'Get lesson by ID' })
   @SwaggerResponse({ status: 200, description: 'Data lesson' })
@@ -29,7 +57,10 @@ export class LessonsController {
   }
 
   @ApiOperation({ summary: 'Get lessons by level ID' })
-  @SwaggerResponse({ status: 200, description: 'Data lesson berdasarkan level' })
+  @SwaggerResponse({
+    status: 200,
+    description: 'Data lesson berdasarkan level',
+  })
   @Get('level/:levelId')
   async findByLevelId(@Param('levelId') levelId: string) {
     const data = await this.lessonsService.findByLevelId(levelId);
@@ -72,13 +103,20 @@ export class LessonsController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateLessonDto: Partial<Lesson>) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateLessonDto: Partial<Lesson>,
+  ) {
     const data = await this.lessonsService.update(id, updateLessonDto);
     return ApiResponse.updated(data, 'Lesson berhasil diupdate');
   }
 
   @ApiOperation({ summary: 'Complete lesson by ID' })
-  @ApiParam({ name: 'id', description: 'Lesson ID', example: '507f1f77bcf86cd799439011' })
+  @ApiParam({
+    name: 'id',
+    description: 'Lesson ID',
+    example: '507f1f77bcf86cd799439011',
+  })
   @SwaggerResponse({ status: 200, description: 'Lesson berhasil diselesaikan' })
   @SwaggerResponse({ status: 404, description: 'Lesson tidak ditemukan' })
   @ApiBearerAuth('JWT-auth')

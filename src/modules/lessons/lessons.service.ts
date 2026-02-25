@@ -18,6 +18,26 @@ export class LessonsService {
       .sort({ levelId: 1, order: 1 })
       .exec();
   }
+  async pagination(page: number, limit:number): Promise<{data:Lesson[],total : number,page:number,totalPage:number}> {
+    const data = await this.lessonModel
+      .find()
+      .sort({ levelId: 1, order: 1 })
+      .skip((page-1)*limit)
+      .limit(limit)
+      .exec();
+
+    const total = await this.lessonModel.countDocuments().exec();
+    const totalPage = Math.ceil(total / limit)
+
+    
+    return {
+      data: data,
+      total : total,
+      page : page,
+      totalPage : totalPage
+    }
+
+  }
 
   async findById(id: string): Promise<Lesson> {
     const lesson = await this.lessonModel.findById(id).exec();

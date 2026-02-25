@@ -23,6 +23,13 @@ export class AuthController {
     return ApiResponse.created(data, 'Registrasi berhasil');
   }
   @Throttle({default:{ttl:60000,limit:5}})
+  @Post('verify-email')
+  async verifyEmail(@Body('token') token: string) {
+    const data = await this.authService.verifyEmail(token);
+    return ApiResponse.success(data,"verify berhasil")
+  }
+
+  @Throttle({default:{ttl:60000,limit:5}})
   @ApiOperation({ summary: 'Login user' })
   @SwaggerResponse({ status: 200, description: 'Login berhasil, return JWT token' })
   @SwaggerResponse({ status: 401, description: 'Email atau password salah' })
@@ -30,6 +37,20 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto) {
     const data = await this.authService.login(loginDto);
     return ApiResponse.success(data, 'Login berhasil');
+  }
+
+  @Throttle({default:{ttl:60000,limit:5}})
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    const data = await this.authService.forgotPassword(email);
+    return ApiResponse.success(data);
+  }
+
+  @Throttle({default:{ttl:60000,limit:5}})
+  @Post('reset-password')
+  async resetPassword(@Body('token') token: string, @Body('newPassword') newPassword: string) {
+    const data = await this.authService.resetPassword(newPassword, token);
+    return ApiResponse.success(data);
   }
 
   @ApiOperation({ summary: 'Get profile user yang sedang login' })
@@ -41,6 +62,14 @@ export class AuthController {
     const data = await this.authService.getProfile(req.user._id);
     return ApiResponse.success(data);
   }
+
+  @Post('refresh-token')
+  async refreshToken(@Body('refreshToken') refreshToken : string){
+    const access_token = await this.authService.refreshToken(refreshToken);
+    return ApiResponse.success({access_token},'Token berhasil diperbarui')
+
+  }
+  
 
 
 }

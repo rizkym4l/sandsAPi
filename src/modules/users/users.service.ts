@@ -23,6 +23,19 @@ export class UsersService {
     return this.userModel.find().select('-password').exec();
   }
 
+  async pagination(page: number, limit: number): Promise<{data: User[], total: number, page: number, totalPage: number}> {
+    const data = await this.userModel
+      .find()
+      .select('-password')
+      .sort({ 'stats.totalXP': -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
+    const total = await this.userModel.countDocuments().exec();
+    const totalPage = Math.ceil(total / limit);
+    return { data, total, page, totalPage };
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).select('+password').exec();
   }
@@ -31,13 +44,25 @@ export class UsersService {
     return this.userModel.findOne({ username }).exec();
   }
 
+  async findUserbyVerificationToken(verifyToken: string):Promise<User | null>{
+    return this.userModel.findOne({verifyToken}).exec()
+  }
+  async findUserbyResetToken(resetToken: string):Promise<User | null>{
+    return this.userModel.findOne({resetToken}).exec()
+  }
+  async findUserbyRefreshToken(refreshToken: string):Promise<User | null>{
+    return this.userModel.findOne({refreshToken}).exec()
+  }
+
   async findById(id: string): Promise<User> {
-    const userAll = await this.userModel.find().exec()
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User tidak ditemukan');
     }
     return user;
+  }
+  async updateById(id:string,data:Partial<User>){
+    return this.userModel.findByIdAndUpdate(id,data,{new:true}).exec( )
   }
 
   async updateProfile(userId: string, updateProfileDto: UpdateProfileDto): Promise<User> {
@@ -108,4 +133,6 @@ export class UsersService {
       .limit(limit)
       .exec();
   }
+
+ 
 }

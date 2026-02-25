@@ -80,6 +80,20 @@ export class User extends Document {
     default: 'user'
   })
   role!: string;
+
+  @Prop({
+    default:false
+  })
+  isVerified!: boolean;
+
+  @Prop({type:String,default: null})
+  verifyToken?:string | null;
+
+  @Prop({type:String,default:null})
+  resetToken!:string | null;
+
+  @Prop({type:String,default:null})
+  refreshToken!:string | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

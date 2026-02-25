@@ -17,6 +17,18 @@ export class AchievementsService {
     return this.achievementModel.find().sort({ rarity: 1 }).exec();
   }
 
+  async pagination(page: number, limit: number): Promise<{data: Achievement[], total: number, page: number, totalPage: number}> {
+    const data = await this.achievementModel
+      .find()
+      .sort({ rarity: 1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
+    const total = await this.achievementModel.countDocuments().exec();
+    const totalPage = Math.ceil(total / limit);
+    return { data, total, page, totalPage };
+  }
+
   async getUserAchievements(userId: string): Promise<UserAchievement[]> {
     return this.userAchievementModel
       .find({ userId })

@@ -1,7 +1,6 @@
 // src/modules/auth/auth.controller.ts
 import { Controller, Post, Body, Get, UseGuards, Request, Res } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse } from '@nestjs/swagger';
-import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -27,7 +26,7 @@ export class AuthController {
   @SwaggerResponse({ status: 400, description: 'Validasi gagal / email sudah terdaftar' })
   @Throttle({default:{ttl:60000,limit:5}})
   @Post('register')
-  async register(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
+  async register(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: any) {
     const data = await this.authService.register(registerDto);
     res.cookie('refresh_token', data.refresh_token, COOKIE_OPTIONS);
     const { refresh_token: _, ...responseData } = data;
@@ -46,7 +45,7 @@ export class AuthController {
   @SwaggerResponse({ status: 200, description: 'Login berhasil, return JWT token' })
   @SwaggerResponse({ status: 401, description: 'Email atau password salah' })
   @Post('login')
-  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
+  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: any) {
     const data = await this.authService.login(loginDto);
     res.cookie('refresh_token', data.refresh_token, COOKIE_OPTIONS);
     const { refresh_token: _, ...responseData } = data;
@@ -85,7 +84,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
+  async logout(@Res({ passthrough: true }) res: any) {
     res.clearCookie('refresh_token', { path: '/' });
     return ApiResponse.success(null, 'Logout berhasil');
   }

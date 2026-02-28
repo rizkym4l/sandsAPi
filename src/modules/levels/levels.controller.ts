@@ -1,5 +1,5 @@
 // src/modules/levels/levels.controller.ts
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiBody } from '@nestjs/swagger';
 import { LevelsService } from './levels.service';
 import { Level } from '../../schemas/level.schema';
@@ -17,8 +17,12 @@ export class LevelsController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Request() req) {
-    const data = await this.levelsService.findAll(req.user._id);
+  async findAll(@Request() req, @Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page && limit) {
+      const paginate = await this.levelsService.pagination(req.user?._id, Number(page) || 1, Number(limit) || 10);
+      return ApiResponse.success(paginate, 'Data level (paginated)');
+    }
+    const data = await this.levelsService.findAll(req.user?._id);
     return ApiResponse.success(data, 'Data semua level');
   }
 

@@ -1,5 +1,5 @@
 // src/modules/progress/progress.controller.ts
-import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse, ApiBody } from '@nestjs/swagger';
 import { ProgressService } from './progress.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -15,7 +15,11 @@ export class ProgressController {
   @SwaggerResponse({ status: 200, description: 'Data progress user' })
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getUserProgress(@Request() req) {
+  async getUserProgress(@Request() req, @Query('page') page?: string, @Query('limit') limit?: string, @Query('status') status?: string) {
+    if (page && limit) {
+      const paginate = await this.progressService.pagination(req.user._id, Number(page) || 1, Number(limit) || 10, status);
+      return ApiResponse.success(paginate, 'Data progress user (paginated)');
+    }
     const data = await this.progressService.getUserProgress(req.user._id);
     return ApiResponse.success(data, 'Data progress user');
   }

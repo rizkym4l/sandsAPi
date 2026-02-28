@@ -21,6 +21,24 @@ export class ProgressService {
       .exec();
   }
 
+  async pagination(userId: string, page: number, limit: number, status?: string): Promise<{data:UserProgress[], total:number, page:number, totalPage:number}> {
+    const filter: Record<string, any> = { userId };
+    if (status) filter.status = status;
+
+    const [data, total] = await Promise.all([
+      this.progressModel
+        .find(filter)
+        .populate('lessonId', 'title rewards type')
+        .sort({ completedAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec(),
+      this.progressModel.countDocuments(filter).exec(),
+    ]);
+    const totalPage = Math.ceil(total / limit);
+    return { data, total, page, totalPage };
+  }
+
   async getLessonProgress(
     userId: string,
     lessonId: string,

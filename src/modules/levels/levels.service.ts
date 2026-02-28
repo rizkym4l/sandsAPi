@@ -43,6 +43,15 @@ export class LevelsService {
     return this.injectCompletion(levels, userId);
   }
 
+  async pagination(userId: string | undefined, page: number, limit: number): Promise<{data:any[], total:number, page:number, totalPage:number}> {
+    const query = this.levelModel.find({ isActive: true }).sort({ order: 1 }).populate('lessons').lean();
+    const data = await query.skip((page - 1) * limit).limit(limit).exec();
+    const total = await this.levelModel.countDocuments({ isActive: true }).exec();
+    const totalPage = Math.ceil(total / limit);
+    const injected = await this.injectCompletion(data, userId);
+    return { data: injected, total, page, totalPage };
+  }
+
   async findById(id: string, userId?: string): Promise<any> {
     const level = await this.levelModel
       .findById(id)

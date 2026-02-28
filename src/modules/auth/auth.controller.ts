@@ -1,12 +1,21 @@
 // src/modules/auth/auth.controller.ts
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Res } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse as SwaggerResponse } from '@nestjs/swagger';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiResponse } from '../../common/response.helper';
 import { Throttle } from '@nestjs/throttler';
+
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  sameSite: 'strict' as const,
+  secure: process.env.NODE_ENV === 'production',
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  path: '/',
+};
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -18,15 +27,18 @@ export class AuthController {
   @SwaggerResponse({ status: 400, description: 'Validasi gagal / email sudah terdaftar' })
   @Throttle({default:{ttl:60000,limit:5}})
   @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
+  async register(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const data = await this.authService.register(registerDto);
-    return ApiResponse.created(data, 'Registrasi berhasil');
+    res.cookie('refresh_token', data.refresh_token, COOKIE_OPTIONS);
+    const { refresh_token: _, ...responseData } = data;
+    return ApiResponse.created(responseData, 'Registrasi berhasil');
   }
+
   @Throttle({default:{ttl:60000,limit:5}})
   @Post('verify-email')
   async verifyEmail(@Body('token') token: string) {
     const data = await this.authService.verifyEmail(token);
-    return ApiResponse.success(data,"verify berhasil")
+    return ApiResponse.success(data, 'verify berhasil');
   }
 
   @Throttle({default:{ttl:60000,limit:5}})
@@ -34,9 +46,11 @@ export class AuthController {
   @SwaggerResponse({ status: 200, description: 'Login berhasil, return JWT token' })
   @SwaggerResponse({ status: 401, description: 'Email atau password salah' })
   @Post('login')
-  async login(@Body() loginDto: LoginDto) {
+  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const data = await this.authService.login(loginDto);
-    return ApiResponse.success(data, 'Login berhasil');
+    res.cookie('refresh_token', data.refresh_token, COOKIE_OPTIONS);
+    const { refresh_token: _, ...responseData } = data;
+    return ApiResponse.success(responseData, 'Login berhasil');
   }
 
   @Throttle({default:{ttl:60000,limit:5}})
@@ -64,12 +78,15 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  async refreshToken(@Body('refreshToken') refreshToken : string){
-    const access_token = await this.authService.refreshToken(refreshToken);
-    return ApiResponse.success({access_token},'Token berhasil diperbarui')
-
+  async refreshToken(@Request() req) {
+    const token = req.cookies?.refresh_token;
+    const access_token = await this.authService.refreshToken(token);
+    return ApiResponse.success({ access_token }, 'Token berhasil diperbarui');
   }
-  
 
-
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('refresh_token', { path: '/' });
+    return ApiResponse.success(null, 'Logout berhasil');
+  }
 }

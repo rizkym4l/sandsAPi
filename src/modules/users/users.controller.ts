@@ -14,15 +14,19 @@ export class UsersController {
   @ApiOperation({ summary: 'Get leaderboard (top users by XP)' })
   @SwaggerResponse({ status: 200, description: 'Data leaderboard' })
   @Get('leaderboard')
-  async getLeaderboard() {
-    const data = await this.usersService.getLeaderboard();
+  async getLeaderboard(@Query('page') page?: string, @Query('limit') limit?: string) {
+    const data = await this.usersService.getLeaderboard(Number(page) || 1, Number(limit) || 20);
     return ApiResponse.success(data, 'Data leaderboard');
   }
 
   @ApiOperation({ summary: 'Get semua user' })
   @SwaggerResponse({ status: 200, description: 'Data semua user' })
   @Get()
-  async findAll() {
+  async findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page && limit) {
+      const paginate = await this.usersService.pagination(Number(page) || 1, Number(limit) || 10);
+      return ApiResponse.success(paginate, 'Data user (paginated)');
+    }
     const data = await this.usersService.findAll();
     return ApiResponse.success(data, 'Data semua user');
   }

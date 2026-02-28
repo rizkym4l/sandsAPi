@@ -125,13 +125,20 @@ export class UsersService {
     return { message: 'User berhasil dihapus' };
   }
 
-  async getLeaderboard(limit: number = 100) {
-    return this.userModel
-      .find()
-      .select('username profile.displayName profile.avatar stats.totalXP')
-      .sort({ 'stats.totalXP': -1 })
-      .limit(limit)
-      .exec();
+  async getLeaderboard(page: number = 1, limit: number = 20): Promise<{ data: any[]; total: number; page: number; totalPage: number }> {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.userModel
+        .find()
+        .select('username profile.displayName profile.avatar stats.totalXP')
+        .sort({ 'stats.totalXP': -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .exec(),
+      this.userModel.countDocuments().exec(),
+    ]);
+    return { data, total, page, totalPage: Math.ceil(total / limit) };
   }
 
  

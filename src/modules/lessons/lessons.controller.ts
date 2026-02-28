@@ -34,7 +34,11 @@ export class LessonsController {
   @ApiOperation({ summary: 'Get semua lesson' })
   @SwaggerResponse({ status: 200, description: 'Data semua lesson' })
   @Get()
-  async findAll() {
+  async findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page && limit) {
+      const paginate = await this.lessonsService.pagination(Number(page) || 1, Number(limit) || 10);
+      return ApiResponse.success(paginate, 'Data lesson (paginated)');
+    }
     const data = await this.lessonsService.findAll();
     return ApiResponse.success(data, 'Data semua lesson');
   }
